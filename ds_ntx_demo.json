@@ -1,0 +1,386 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "DocuSign Custom Connector",
+    "description": "",
+    "version": "1.0"
+  },
+  "host": "demo.docusign.net",
+  "basePath": "/restapi/v2.1",
+  "schemes": [
+    "https"
+  ],
+  "x-ntx-render-version" : 2,
+  "consumes": [
+    "application/json",
+    "application/xml"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "externalDocs": {
+    "description": "See the DocuSign REST API Guide for more information.",
+    "url": "https://docs.docusign.com/esign"
+  },
+  "paths": {    
+    "/accounts/{accountId}/envelopes": {
+      "post": {
+        "responses": {
+            "201": {
+              "description": "Successful response.",
+              "schema": {
+
+                    "type": "object",
+                    "properties": {
+                      "envelopeId": {
+                        "description": "The envelope ID of the envelope status that failed to post.",
+                        "type": "string"
+                      },
+                      "status": {
+                        "description": "Indicates the envelope status. Valid values are: \n\n* `completed`: The recipients have finished working with the envelope: the documents are signed and all required tabs are filled in.\n* `created`: The envelope is created as a draft. It can be modified and sent later.\n* `declined`: The envelope has been declined by the recipients.\n* `delivered`: The envelope has been delivered to the recipients.\n* `sent`: The envelope will be sent to the recipients after the envelope is created.\n* `signed`: The envelope has been signed by the recipients.\n* `voided`: The envelope is no longer valid and recipients cannot access or sign the envelope.\n",
+                        "type": "string"
+                      },
+                      "statusDateTime": {
+                        "description": "The DateTime that the envelope changed status (i.e. was created or sent.)",
+                        "type": "string"
+                      }
+                    }
+                  }
+              
+            },
+            "400": {
+              "description": "Error encountered.",
+              "schema": {
+                    "description": "This object describes errors that occur. It is only valid for responses and ignored in requests.",
+                    "type": "object",
+                    "properties": {
+                      "errorCode": {
+                        "description": "The code associated with the error condition.",
+                        "type": "string"
+                      },
+                      "message": {
+                        "description": "A brief message describing the error condition.",
+                        "type": "string"
+                      }
+                    },
+                    "x-ds-definition-name": "errorDetails",
+                    "x-ms-summary": "This object describes errors that occur. It is only valid for responses and ignored in requests."
+              }
+            }
+          },
+        "summary": "Send Envelope",
+        "description": "Send Envelope, with SMS Delivery, 2FA, and multiple documents",
+        "operationId": "Send_envelope",
+        "parameters": [
+           {
+            "name": "accountId",
+            "in": "path",
+            "description": "The external account number (int) or account ID GUID.",
+            "required": true,
+            "type": "string"
+          },            
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "documents": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "documentBase64": {
+                        "type": "string",
+                        "format": "byte",
+                        "description": "documentBase64+byte"
+                      },
+                      "documentId": {
+                        "type": "string",
+                        "description": "documentId"
+                      },
+                      "fileExtension": {
+                        "type": "string",
+                        "description": "fileExtension"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "name"
+                      },
+                      "order": {
+                        "type": "string",
+                        "description": "order"
+                      }
+                    }
+                  },
+                  "description": "documents"
+                },
+                "emailSubject": {
+                  "type": "string",
+                  "description": "emailSubject"
+                },
+                "recipients": {
+                  "type": "object",
+                  "properties": {
+                    "signers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                            "description": "email"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "name"
+                          },
+                          "recipientId": {
+                            "type": "integer",
+                            "format": "int32",
+                            "description": "recipientId"
+                          },
+                          "roleName": {
+                            "type": "string",
+                            "description": "roleName"
+                          },
+                          "accessCode": {
+                            "type": "string",
+                            "description": "accessCode"
+                          },
+                          "additionalNotifications": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "secondaryDeliveryMethod": {
+                                  "type": "string",
+                                  "description": "secondaryDeliveryMethod"
+                                },
+                                "phoneNumber": {
+                                  "type": "object",
+                                  "properties": {
+                                    "countryCode": {
+                                      "type": "string",
+                                      "description": "countryCode"
+                                    },
+                                    "number": {
+                                      "type": "string",
+                                      "description": "number"
+                                    }
+                                  },
+                                  "description": "phoneNumber"
+                                }
+                              }
+                            },
+                            "description": "additionalNotifications"
+                          }
+                        }
+                      },
+                      "description": "signers"
+                    },
+                    "carbonCopies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                            "description": "email"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "name"
+                          },
+                          "recipientId": {
+                            "type": "string",
+                            "description": "recipientId"
+                          },
+                          "roleName": {
+                            "type": "string",
+                            "description": "roleName"
+                          },
+                          "routingOrder": {
+                            "type": "string",
+                            "description": "routingOrder"
+                          }
+                        }
+                      },
+                      "description": "carbonCopies"
+                    }
+                  },
+                  "description": "recipients"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "status"
+                }
+              }
+            }
+          }
+        ]
+    },
+      "get": {
+        "responses": {
+            "200": {
+              "description": "Successful response.",
+              "schema": {
+                    "type": "object",
+                    "properties": {
+                      "continuationToken": {
+                        "description": "A token returned by an earlier API call that you can use with a new call to resume a search query at the point where it left off.  This token system enhances the performance of the API.",
+                        "type": "string"
+                      },
+                      "envelopes": {
+                        "description": "Set of envelope information",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {                              
+                              "documentBase64": {
+                                "description": "The document's bytes. This field can be used to include a base64 version of the document bytes within an envelope definition instead of sending the document using a multi-part HTTP request. The maximum document size is smaller if this field is used due to the overhead of the base64 encoding.",
+                                "type": "string"
+                              },
+                              "envelopeDocuments": {
+                                "description": "An array containing information about the documents that are included in the envelope.",
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "documentBase64": {
+                                        "description": "The document's bytes. This field can be used to include a base64 version of the document bytes within an envelope definition instead of sending the document using a multi-part HTTP request. The maximum document size is smaller if this field is used due to the overhead of the base64 encoding.",
+                                        "type": "string"
+                                      },
+                                      "documentId": {
+                                        "description": "The id of the document that the tab is placed on. This value must refer to the id of an existing document.",
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "description": "The document's file name. \n\nExample: `Q1-Report.docx`",
+                                        "type": "string"
+                                      }
+                                    },
+                                    "x-ds-definition-name": "envelopeDocument",
+                                    "description": "This object contains details about the envelope document.",
+                                    "x-ms-summary": "This object contains details about the envelope document."
+                                  }                                
+                              },
+                              "envelopeId": {
+                                "description": "The envelope ID of the envelope status that failed to post.",
+                                "type": "string"
+                              },
+                              "status": {
+                                "description": "Indicates the envelope status. Valid values are:\n\n* `completed`: The recipients have finished working with the envelope: the documents are signed and all required tabs are filled in.\n* `created`: The envelope is created as a draft. It can be modified and sent later.\n* `declined`: The envelope has been declined by the recipients.\n* `delivered`: The envelope has been delivered to the recipients.\n* `sent`: The envelope will be sent to the recipients after the envelope is created.\n* `signed`: The envelope has been signed by the recipients.\n* `voided`: The envelope is no longer valid and recipients cannot access or sign the envelope.\n",
+                                "type": "string"
+                              },
+                              "statusDateTime": {
+                                "description": "The DateTime that the envelope changed status (i.e. was created or sent.)",
+                                "type": "string"
+                              }
+                            },
+                            "x-ds-definition-name": "envelope",
+                            "description": "",
+                            "x-ms-summary": ""
+                                                
+                        
+                      }},
+                      "envelopeTransactionStatuses": {
+                        "description": "Array of envelope statuses and transaction IDs in the result set.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "envelopeId": {
+                              "description": "The envelope ID of the envelope status that failed to post.",
+                              "type": "string"
+                            },
+                            "status": {
+                              "description": "Indicates the envelope status. Valid values are:\n\n* `completed`: The recipients have finished working with the envelope: the documents are signed and all required tabs are filled in.\n* `created`: The envelope is created as a draft. It can be modified and sent later.\n* `declined`: The envelope has been declined by the recipients.\n* `delivered`: The envelope has been delivered to the recipients.\n* `sent`: The envelope will be sent to the recipients after the envelope is created.\n* `signed`: The envelope has been signed by the recipients.\n* `voided`: The envelope is no longer valid and recipients cannot access or sign the envelope.\n",
+                              "type": "string"
+                            }
+                          },
+                          "x-ds-definition-name": "envelopeTransactionStatus",
+                          "description": "",
+                          "x-ms-summary": ""
+                        }
+                      },
+                      "lastQueriedDateTime": {
+                        "description": "The last time that a query was performed.",
+                        "type": "string"
+                      },
+                      "resultSetSize": {
+                        "description": "The number of results in this response. Because you can filter which entries are included in the response, this value is always less than or equal to the `totalSetSize`.",
+                        "type": "string"
+                      }
+                    },
+                    "x-ds-definition-name": "envelopesInformation",
+                    "description": "Result set for the Envelopes: listStatusChanges method",
+                    "x-ms-summary": "Result set for the Envelopes: listStatusChanges method"
+                  
+              }
+            },
+            "400": {
+              "description": "Error encountered.",
+              "schema": {
+                    "description": "This object describes errors that occur. It is only valid for responses and ignored in requests.",
+                    "type": "object",
+                    "properties": {
+                      "errorCode": {
+                        "description": "The code associated with the error condition.",
+                        "type": "string"
+                      },
+                      "message": {
+                        "description": "A brief message describing the error condition.",
+                        "type": "string"
+                      }
+                    },
+                    "x-ds-definition-name": "errorDetails",
+                    "x-ms-summary": "This object describes errors that occur. It is only valid for responses and ignored in requests."
+              }
+            }
+          },
+        "summary": "Get Envelope",
+        "description": "Get Envelope",
+        "operationId": "Get_envelope",
+        "parameters": [           
+            {
+                "name": "accountId",
+                "in": "path",
+                "description": "The external account number (int) or account ID GUID.",
+                "required": true,
+                "type": "string"
+            },            
+            {
+                "name": "envelope_ids",
+                "in": "query",
+                "required": false,
+                "type": "string"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {},
+  "parameters": {},
+  "responses": {},
+  "securityDefinitions": {
+    "oauth2_auth": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://account-d.docusign.com/oauth/auth",
+      "tokenUrl": "https://account-d.docusign.com/oauth/token",
+      "scopes": {
+        "signature extended": "signature extended"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth2_auth": [
+        "signature extended"
+      ]
+    }
+  ],
+  "tags": []
+}
